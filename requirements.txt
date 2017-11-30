@@ -1,0 +1,17 @@
+* Using the [data that was open-sourced by Instacart](https://tech.instacart.com/3-million-instacart-orders-open-sourced-d40d29ead6f2), prepare the data so it can be used in a CUI. A working app should let me add and remove items from a shopping cart. It should also let me check the prices of items, and pseudo-checkout to make a purchase (psuedo meaning Stripe integration with the terminal is not necessary).
+
+## Details
+
+* Choose an NLP service, such as Dialogflow, wit.ai, or LUIS. The rest of this document will refer to these as "the NLP service"
+* Recommend start using "the NLP service" in proof-of-concept (POC) with a small dataset of groceries: 5-20 products max. Why? To see "the NLP service" work at a scale that we can comprehend.
+* Build a shell application that supports 
+  * addding products to a cart
+  * remove products from the cart
+  * check prices of products
+  * checkout (Stripe integration or actual payment processing not required)
+* Train "the NLP service" to let me perform the above actions using natural language. Bare minimum is 5 different styles of achieving each action. The "A+" goal is to stump me - every way I try to perform those actions works. Stretch goal / extra-credit: add spoken language so I can perform these actions using my voice.
+* Train "the NLP service" to recoginize amounts and units: What happens when I add 2 of something? 5 of something else? What if I order a pound of this, or an ounce of that? The seed data from Instacart may not support this exploration. The POC dataset can be used for using different units of measurement.
+* [Download the data from Instacart](https://www.instacart.com/datasets/grocery-shopping-2017), and prepare it for our store. This means making it fit a Product model for our store, so we know what to charge when a person adds items to their cart. It also means making it fit the "Entity" model so we can train the NLP engine to use our products.
+* The dataset doesn't have synonyms. Find a way to generate synonyms for the dataset. We need to be able to order things using singlular and plural forms. What about the difference between "fennel", "bulbs of fennel", and "bulb of fennel"? How will you deal with "honeycrisp apples", "honey crisp apples", and "honey-crisp apples"? **Please don't launch the equivelant of a denial of service attack on thesaurus.com.**
+* Make suggestions when my order is too ambiguous: "apples" should result in my picking from a list, or entering more information to figure out what kind of apples I want. If I need to type more information, you need to have a threshold so I don't get stuck. Ideally this threshold would not fail, but instead help me make a choice.
+* When your CUI doesn't understand me, help me as best as you can. Can you give me constructive feedback that helps me interact more efficiently with your CUI, instead of just saying broad things like, "ask for help"?
