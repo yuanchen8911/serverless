@@ -126,7 +126,7 @@ class ShoppingBot:
 
                 # If the query cannot be understood
                 if len(metadata) == 0:
-                    print('Sorry, I don\'t understand.')
+                    print(colored('Sorry, I don\'t understand.', 'red'))
                     self.displayHelp()
                     continue
 
