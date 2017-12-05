@@ -54,8 +54,7 @@ class ShoppingBot(self):
 
         userInput = sys.stdin.readline()
 
-        while userInput != :
-
+        while userInput !=:
 
 
 def main():
