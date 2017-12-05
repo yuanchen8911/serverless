@@ -23,11 +23,10 @@ except ImportError:
 
 
 CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
-class ShoppingCart(self):
+class ShoppingCart():
 	def __init__(self):
-		
+
 		'''
 		TO DO: initialize data structure to store items 
 
 		'''
-		

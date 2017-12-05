@@ -1,5 +1,5 @@
 
-class Item(self):
+class Item():
 	def __init__(self,name):
 		self.ItemName = name
 		self.price = 10
@@ -14,4 +14,4 @@ class Item(self):
 	def getQuantity(self):
 		return self.quantity
 
-	
+
