@@ -86,11 +86,14 @@ class ShoppingBot:
             userInput = raw_input()
 
             # normal flow
+            # If the user wants to exit
             if userInput.lower() == 'exit':
                 self.displayBye()
                 break
+            # If the user wants to check shopping cart
             elif userInput.lower() == 'list-items':
                 self.displayItemsInCart()
+            # If the user wants to check out
             elif userInput.lower() == 'checkout':
                 self.displayItemsInCart()
                 self.displayBye()
@@ -110,6 +113,7 @@ class ShoppingBot:
 
                 metadata = response['result']['metadata']
 
+                # If the query cannot be understood
                 if len(metadata) == 0:
                     print('Sorry, I don\'t understand.')
                     self.displayHelp()
@@ -123,15 +127,24 @@ class ShoppingBot:
 
                 items = result['parameters']['Item']
 
+                # If no item can be detected
                 if len(items) == 0:
-                    print('Sorry, I don\'t understand.')
+                    print('Sorry, I can\'t recognize the item you want to add/remove.')
                     self.displayHelp()
                     continue
 
+                # TO DO: If the item cannot be found in our grocery
+
+                # If the user wants to add
+
+                # If the user want to remove
+
+                # If number of items are not specified
                 if len(number) < len(items):
                     for itemName in items:
                         item = self.itemsInfo[itemName]
                         self.askForQuantity(item)
+
 
             print("echo " + userInput)
 
