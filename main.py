@@ -3,6 +3,7 @@ from __future__ import print_function
 import sys
 import json
 import apiai
+import os
 
 from shoppingCart import Cart
 from items import Item
@@ -74,7 +75,7 @@ class ShoppingBot:
             self.displayHelp()
             return
         count = response['result']['parameters']['number']
-        self.shoppingCart.addToCart(Item(item.itemName, count, item.price))
+        self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
         print("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!")
         self.displayItemsInCart()
 
@@ -83,10 +84,11 @@ class ShoppingBot:
         self.displayHelp()
 
         while True:
+
             print(u"> ", end=u"")
 
             userInput = raw_input()
-
+            os.system('clear')
             # normal flow
             # If the user wants to exit
             if userInput.lower() == 'exit':
@@ -95,7 +97,8 @@ class ShoppingBot:
             # If the user wants to check shopping cart
             elif userInput.lower() == 'list-items':
                 self.displayItemsInCart()
-
+            elif userInput.lower() == 'help':
+                self.displayHelp()
             else:
                 # send to aiapi
                 request = self.ai.text_request()
@@ -119,40 +122,57 @@ class ShoppingBot:
                     self.displayHelp()
                     continue
 
-                result = response['result']
-                number = result['parameters']['number']
-                items = result['parameters']['Item']
-
-                # If no item can be detected
-                if len(items) == 0:
-                    print('Sorry, I can\'t recognize the item you want to add/remove.')
-                    self.displayHelp()
-                    continue
-
-                # TO DO: If the item cannot be found in our grocery
-
                 # If the user wants to add
-                # If number of items are not specified
-                if len(number) < len(items):
-                    for itemName in items:
-                        item = self.itemsInfo[itemName]
-                        self.askForQuantity(item)
-                # If all items and numbers are specified
-                else:
-                    for i in range(len(items)):
-                        item = self.itemsInfo[items[i]]
-                        self.shoppingCart.addToCart(Item(item.itemName, int(number[i])))
-                        print("Successfully add " + str(
-                            number[i]) + " " + item.unit + " " + item.itemName + " to cart!")
-                    self.shoppingCart.printCart()
+                if metadata['intentName'] == 'addToCart':
+                    result = response['result']
+                    number = result['parameters']['number']
+                    items = result['parameters']['Item']
+
+                    # If no item can be detected
+                    if len(items) == 0:
+                        print('Sorry, I can\'t recognize the item you want to add/remove.')
+                        self.displayHelp()
+                        continue
+
+                    # TO DO: If the item cannot be found in our grocery
 
 
+                    # If number of items are not specified
+                    if len(number) < len(items):
+                        for itemName in items:
+                            item = self.itemsInfo[itemName]
+                            self.askForQuantity(item)
+                    # If all items and numbers are specified
+                    else:
+                        for i in range(len(items)):
+                            item = self.itemsInfo[items[i]]
+                            self.shoppingCart.addToCart(Item(item.itemName, int(number[i])))
+                            print("Successfully add " + str(
+                                number[i]) + " " + item.unit + " " + item.itemName + " to cart!")
+                        self.shoppingCart.printCart()
                 # If the user want to remove
+                elif metadata['intentName'] == 'removeFromCart':
+                    result = response['result']
+                    items = result['parameters']['Item']
 
+                    # If no item can be detected
+                    if len(items) == 0:
+                        print('Sorry, I can\'t recognize the item you want to add/remove.')
+                        self.displayHelp()
+                        continue
+
+                    for itemName in items:
+                        self.shoppingCart.removeItem(itemName)
+                        print("Successfully remove " + itemName + " from cart!")
+                    self.shoppingCart.printCart()
                 # If the user wants to check out
+                elif metadata['intentName'] == 'checkOut':
+                    print("Thanks for shopping with us!")
+                    self.shoppingCart.printCart()
+                    self.shoppingCart.getTotal()
 
-
-            print("echo " + userInput)
+            if debug:
+                print("echo " + userInput)
 
 
 def main():

@@ -51,6 +51,7 @@ class Cart():
 			total += item.getQuantity() * item.getPrice()
 		print '--------------------------------------'
 		print 'total amount ' + str(total)
+		self.items.clear()
 		return 
 
 
