@@ -180,6 +180,9 @@ class ShoppingBot:
                         self.shoppingCart.printCart()
                         self.shoppingCart.getTotal()
 
+                else:
+                    print(colored('Sorry, I don\'t understand.', 'red'))
+
             if debug:
                 print("echo " + userInput)
 
