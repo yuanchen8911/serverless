@@ -97,6 +97,8 @@ class ShoppingBot:
 
             userInput = raw_input()
             os.system('clear')
+            if len(userinput) < 0:
+                continue
             # normal flow
             # If the user wants to exit
             if userInput.lower() == 'exit':
