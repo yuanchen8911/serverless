@@ -1,4 +1,4 @@
-class cart():
+class Cart():
 	def __init__(self):
 		self.items = {}
 	'''
@@ -37,19 +37,20 @@ class cart():
 	list everything in the shopping cart 
 	'''
 	def printCart(self):
+		print 'name      quantity        price'
 		for (k,item) in self.items.iteritems():
 			name = k
 			quantity = item.getQuantity()
 			price = item.getPrice()
 			totalP = quantity * price 
-			print name + " " + quantity + " " + str(totalP)
+			print name + "            " +str(quantity) + "             " + str(totalP)
 		return 
 	def getTotal(self):
 		total = 0
 		for (k,item) in self.items.iteritems():
 			total += item.getQuantity() * item.getPrice()
-			print '--------------------------------------'
-			print 'total amount ' + str(total)
+		print '--------------------------------------'
+		print 'total amount ' + str(total)
 		return 
 
 
