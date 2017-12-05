@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import os
 import sys
 import json
 import apiai
@@ -96,10 +95,7 @@ class ShoppingBot:
             # If the user wants to check shopping cart
             elif userInput.lower() == 'list-items':
                 self.displayItemsInCart()
-            # If the user wants to check out
-            elif userInput.lower() == 'checkout':
-                self.displayItemsInCart()
-                self.displayBye()
+
             else:
                 # send to aiapi
                 request = self.ai.text_request()
@@ -136,21 +132,24 @@ class ShoppingBot:
                 # TO DO: If the item cannot be found in our grocery
 
                 # If the user wants to add
-
-                # If the user want to remove
-
                 # If number of items are not specified
                 if len(number) < len(items):
                     for itemName in items:
                         item = self.itemsInfo[itemName]
                         self.askForQuantity(item)
+                # If all items and numbers are specified
                 else:
                     for i in range(len(items)):
                         item = self.itemsInfo[items[i]]
                         self.shoppingCart.addToCart(Item(item.itemName, int(number[i])))
-                        print("Successfully add " + str(number[i]) + " " + item.unit + " " + item.itemName + " to cart!")
+                        print("Successfully add " + str(
+                            number[i]) + " " + item.unit + " " + item.itemName + " to cart!")
                     self.shoppingCart.printCart()
 
+
+                # If the user want to remove
+
+                # If the user wants to check out
 
 
             print("echo " + userInput)
