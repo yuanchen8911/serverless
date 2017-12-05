@@ -60,7 +60,7 @@ class ShoppingBot:
         print('Bye')
 
     def askForQuantity(self, item):
-        print(colored('We only sell by pounds. How many ' + item.unit + " of " + item.itemName + " do you want?",' blue'))
+        print(colored('We only sell by pounds. How many ' + item.unit + " of " + item.itemName + " do you want?",'blue'))
         userInput = raw_input()
         request = self.ai.text_request()
         request.lang = 'en'  # optional, default value equal 'en'
@@ -97,6 +97,8 @@ class ShoppingBot:
 
             userInput = raw_input()
             os.system('clear')
+            if userInput == None or len(userInput) <= 0:
+                continue
             # normal flow
             # If the user wants to exit
             if userInput.lower() == 'exit':
