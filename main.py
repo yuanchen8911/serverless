@@ -14,6 +14,12 @@ class ShoppingBot:
 
     def __init__(self, data_file):
         self.shoppingCart = None
+        print 'Start initializing shopping bot...'
+        with open(data_file,'r') as f:
+            for line in f.readline():
+                s = line.split(',')
+                itemsInfo[s[0]] = float(s[1])
+        print 'Finished initializing shopping bot'
 
     def displayGreeting(self):
         print('Hi! Welcome to our grocery store! You can always type Help to get more information about our system!')
