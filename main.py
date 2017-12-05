@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import os
 import sys
 import json
 import apiai
@@ -9,6 +8,7 @@ from shoppingCart import Cart
 from items import Item
 
 CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
+debug = False
 
 
 class ShoppingBot:
@@ -24,7 +24,8 @@ class ShoppingBot:
         with open(data_file, 'r') as f:
             for line in f.readlines():
                 s = line.split(',')
-                print(line)
+                if debug:
+                    print(line)
                 self.itemsInfo[s[0]] = Item(s[0], 0, float(s[1]))
             print('Finished initializing shopping bot')
 
@@ -59,7 +60,8 @@ class ShoppingBot:
         request.query = userInput
         response = json.loads(request.getresponse().read())
 
-        print(response)
+        if debug:
+            print(response)
 
         metadata = response['result']['metadata']
 
@@ -86,14 +88,14 @@ class ShoppingBot:
             userInput = raw_input()
 
             # normal flow
+            # If the user wants to exit
             if userInput.lower() == 'exit':
                 self.displayBye()
                 break
+            # If the user wants to check shopping cart
             elif userInput.lower() == 'list-items':
                 self.displayItemsInCart()
-            elif userInput.lower() == 'checkout':
-                self.displayItemsInCart()
-                self.displayBye()
+
             else:
                 # send to aiapi
                 request = self.ai.text_request()
@@ -106,37 +108,57 @@ class ShoppingBot:
 
                 response = json.loads(request.getresponse().read())
 
-                print(response)
+                if debug:
+                    print(response)
 
                 metadata = response['result']['metadata']
 
+                # If the query cannot be understood
                 if len(metadata) == 0:
                     print('Sorry, I don\'t understand.')
                     self.displayHelp()
                     continue
 
                 result = response['result']
-
                 number = result['parameters']['number']
-
-                print(response)
-
                 items = result['parameters']['Item']
 
+                # If no item can be detected
                 if len(items) == 0:
-                    print('Sorry, I don\'t understand.')
+                    print('Sorry, I can\'t recognize the item you want to add/remove.')
                     self.displayHelp()
                     continue
 
+                # TO DO: If the item cannot be found in our grocery
+
+                # If the user wants to add
+                # If number of items are not specified
                 if len(number) < len(items):
                     for itemName in items:
                         item = self.itemsInfo[itemName]
                         self.askForQuantity(item)
+                # If all items and numbers are specified
+                else:
+                    for i in range(len(items)):
+                        item = self.itemsInfo[items[i]]
+                        self.shoppingCart.addToCart(Item(item.itemName, int(number[i])))
+                        print("Successfully add " + str(
+                            number[i]) + " " + item.unit + " " + item.itemName + " to cart!")
+                    self.shoppingCart.printCart()
+
+
+                # If the user want to remove
+
+                # If the user wants to check out
+
 
             print("echo " + userInput)
 
 
 def main():
+    global debug
+    if len(sys.argv) > 1 and sys.argv[1] == '--debug':
+        debug = True
     shoppingBot = ShoppingBot("items.txt")
     shoppingBot.run()
 
