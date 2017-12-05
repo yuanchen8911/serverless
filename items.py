@@ -16,6 +16,7 @@ class Item():
 	def toString(self):
 		str = self.name + " " + str(self.quantity)
 		return str
-
+	def getPrice(self):
+		return self.price
 
 
