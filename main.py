@@ -9,6 +9,7 @@ from shoppingCart import Cart
 from items import Item
 
 CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
+debug = False
 
 
 class ShoppingBot:
@@ -24,7 +25,8 @@ class ShoppingBot:
         with open(data_file, 'r') as f:
             for line in f.readlines():
                 s = line.split(',')
-                print(line)
+                if debug:
+                    print(line)
                 self.itemsInfo[s[0]] = Item(s[0], 0, float(s[1]))
             print('Finished initializing shopping bot')
 
@@ -59,7 +61,8 @@ class ShoppingBot:
         request.query = userInput
         response = json.loads(request.getresponse().read())
 
-        print(response)
+        if debug:
+            print(response)
 
         metadata = response['result']['metadata']
 
@@ -106,7 +109,8 @@ class ShoppingBot:
 
                 response = json.loads(request.getresponse().read())
 
-                print(response)
+                if debug:
+                    print(response)
 
                 metadata = response['result']['metadata']
 
@@ -116,11 +120,7 @@ class ShoppingBot:
                     continue
 
                 result = response['result']
-
                 number = result['parameters']['number']
-
-                print(response)
-
                 items = result['parameters']['Item']
 
                 if len(items) == 0:
@@ -132,11 +132,17 @@ class ShoppingBot:
                     for itemName in items:
                         item = self.itemsInfo[itemName]
                         self.askForQuantity(item)
+                else:
+                    for i in range(len(items)):
+                        item = self.itemsInfo[itemName]
 
             print("echo " + userInput)
 
 
 def main():
+    global debug
+    if len(sys.argv) > 1 and sys.argv[1] == '--debug':
+        debug = True
     shoppingBot = ShoppingBot("items.txt")
     shoppingBot.run()
 
