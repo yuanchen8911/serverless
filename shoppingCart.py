@@ -1,7 +1,8 @@
 class cart():
 	def __init__(self):
-		self.items = []
+		self.items = {}
 	def addToCart(self,item):
-		self.items.append(item)
+		if item.itemName in self.items:
+			
 		return 
-	def 
+	def remove
