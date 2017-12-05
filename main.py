@@ -5,6 +5,9 @@ import sys
 import json
 import apiai
 
+from shoppingCart import Cart
+from items import Item
+
 CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
 
 
@@ -14,11 +17,20 @@ class ShoppingBot:
     ai = None
 
     def __init__(self, data_file):
-        self.shoppingCart = None
+        self.shoppingCart = Cart()
         self.ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
+        print('Start initializing shopping bot...')
+        with open(data_file, 'r') as f:
+            for line in f.readlines():
+                s = line.split(',')
+                print(line)
+                self.itemsInfo[s[0]] = Item(s[0], 0, float(s[1]))
+            print('Finished initializing shopping bot')
+
     def displayGreeting(self):
-        print('Hi! Welcome to our grocery store! You can always type Help to get more information about our system!')
+        print(
+            'Hi! Welcome to our grocery store! You can always type Help to get more information about our system!')
 
     def displayHelp(self):
         print('Buy something -- Say "add something to my cart"')
@@ -32,20 +44,37 @@ class ShoppingBot:
         print('Type exit to stop shopping')
 
     def displayItemsInCart(self):
-        print(self.shoppingCart.toString)
+        self.shoppingCart.printCart()
 
     def displayBye(self):
         print('Thanks for shopping with us!')
         print('Bye')
 
     def askForQuantity(self, item):
-        print('How many ' + item.unit + " of " + item + " do you want?")
+        print('How many ' + item.unit + " of " + item.itemName + " do you want?")
         userInput = raw_input()
         request = self.ai.text_request()
         request.lang = 'en'  # optional, default value equal 'en'
         request.session_id = "1"
         request.query = userInput
         response = json.loads(request.getresponse().read())
+
+        print(response)
+
+        metadata = response['result']['metadata']
+
+        if len(metadata) == 0:
+            print('Sorry, I don\'t understand.')
+            self.displayHelp()
+            return
+        if metadata['intentName'] != 'itemCount':
+            print('Sorry, I don\'t understand.')
+            self.displayHelp()
+            return
+        count = response['result']['parameters']['number']
+        self.shoppingCart.addToCart(Item(item.itemName, count, item.price))
+        print("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!")
+        self.displayItemsInCart()
 
     def run(self):
         self.displayGreeting()
@@ -109,7 +138,6 @@ class ShoppingBot:
 
 def main():
     shoppingBot = ShoppingBot("items.txt")
-
     shoppingBot.run()
 
 
