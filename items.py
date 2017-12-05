@@ -1,7 +1,7 @@
 
-class Item(self):
+class Item():
 	def __init__(self,name):
-		self.ItemName = name
+		self.itemName = name
 		self.price = 10
 		self.unit = 'pound'
 		self.quantity = 0
@@ -14,4 +14,4 @@ class Item(self):
 	def getQuantity(self):
 		return self.quantity
 
-	
+

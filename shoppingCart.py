@@ -1,4 +1,8 @@
-class cart(self):
+class cart():
 	def __init__(self):
-		self.items = []
-		
+		self.items = {}
+	def addToCart(self,item):
+		if item.itemName in self.items:
+			
+		return 
+	def remove
