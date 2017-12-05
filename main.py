@@ -19,7 +19,6 @@ class ShoppingBot:
     def __init__(self, data_file):
         self.shoppingCart = None
 
-
     def displayGreeting(self):
         print('Hi! Welcome to our grocery store! You can always type Help to get more information about our system!')
 
@@ -61,22 +60,25 @@ class ShoppingBot:
                 self.displayBye()
             else:
                 # send to aiapi
+                ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
+
+                request = ai.text_request()
+
+                request.lang = 'en'  # optional, default value equal 'en'
+
+                request.session_id = "1"
+
+                request.query = userInput
+
+
+                response = request.getresponse()
+
+                print(response.read())
+
                 print("echo " + userInput)
 
 
 def main():
-    ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
-
-    request = ai.event_request(apiai.events.Event("my_custom_event"))
-
-    request.lang = 'en'  # optional, default value equal 'en'
-
-    request.session_id = "my-session"
-
-    response = request.getresponse()
-
-    print(response.read())
-
     shoppingBot = ShoppingBot("items.txt")
 
     shoppingBot.run()
