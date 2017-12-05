@@ -134,7 +134,11 @@ class ShoppingBot:
                         self.askForQuantity(item)
                 else:
                     for i in range(len(items)):
-                        item = self.itemsInfo[itemName]
+                        item = self.itemsInfo[items[i]]
+                        self.shoppingCart.addToCart(Item(item.itemName, int(number[i])))
+                        print("Successfully add " + str(number[i]) + " " + item.unit + " " + item.itemName + " to cart!")
+                    self.shoppingCart.printCart()
+
 
             print("echo " + userInput)
 
