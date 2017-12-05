@@ -25,10 +25,9 @@ CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
 
 
 class ShoppingBot():
-    items_info = {}
-
+    
     def __init__(self, data_file):
-
+        self.items_info = {}
     # read data from file
 
     def displayGreeting(self):
