@@ -167,9 +167,13 @@ class ShoppingBot:
                     self.shoppingCart.printCart()
                 # If the user wants to check out
                 elif metadata['intentName'] == 'checkOut':
-                    print("Thanks for shopping with us!")
                     self.shoppingCart.printCart()
-                    self.shoppingCart.getTotal()
+                    print("Do you want to checkout (yes/no)?")
+                    confirm = raw_input()
+                    if confirm.lower() == 'yes':
+                        print("Thanks for shopping with us!")
+                        self.shoppingCart.printCart()
+                        self.shoppingCart.getTotal()
 
             if debug:
                 print("echo " + userInput)
