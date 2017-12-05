@@ -8,6 +8,7 @@ import os
 import sys
 import json
 import apiai
+import 
 
 CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
 
@@ -17,7 +18,7 @@ class ShoppingBot:
     shoppingCart = None
 
     def __init__(self, data_file):
-        self.shoppingCart = None
+        self.shoppingCart =
 
     def displayGreeting(self):
         print('Hi! Welcome to our grocery store! You can always type Help to get more information about our system!')
