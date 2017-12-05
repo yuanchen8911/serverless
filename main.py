@@ -4,6 +4,10 @@ import sys
 import json
 import apiai
 import os
+from termcolor import colored
+
+
+
 
 from shoppingCart import Cart
 from items import Item
@@ -31,8 +35,9 @@ class ShoppingBot:
             print('Finished initializing shopping bot')
 
     def displayGreeting(self):
-        print(
-            'Hi! Welcome to our grocery store! You can always type Help to get more information about our system!')
+        colored('hello', 'red'), colored('world', 'green')
+        print (colored(
+            'Hi! Welcome to our grocery store! You can always type Help to get more information about our system!', 'blue'))
 
     def displayHelp(self):
         print('Buy something -- Say "add something to my cart"')
@@ -67,16 +72,16 @@ class ShoppingBot:
         metadata = response['result']['metadata']
 
         if len(metadata) == 0:
-            print('Sorry, I don\'t understand.')
+            print(colored('Sorry, I don\'t understand.', 'red'))
             self.displayHelp()
             return
         if metadata['intentName'] != 'itemCount':
-            print('Sorry, I don\'t understand.')
+            print(colored('Sorry, I don\'t understand.', 'red'))
             self.displayHelp()
             return
         count = response['result']['parameters']['number']
         self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
-        print("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!")
+        print(colored("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
         self.displayItemsInCart()
 
     def run(self):
@@ -130,7 +135,7 @@ class ShoppingBot:
 
                     # If no item can be detected
                     if len(items) == 0:
-                        print('Sorry, I can\'t recognize the item you want to add/remove.')
+                        print(colored('Sorry, I can\'t recognize the item you want to add/remove.', 'red'))
                         self.displayHelp()
                         continue
 
@@ -147,8 +152,8 @@ class ShoppingBot:
                         for i in range(len(items)):
                             item = self.itemsInfo[items[i]]
                             self.shoppingCart.addToCart(Item(item.itemName, int(number[i])))
-                            print("Successfully add " + str(
-                                number[i]) + " " + item.unit + " " + item.itemName + " to cart!")
+                            print(colored("Successfully add " + str(
+                                number[i]) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
                         self.shoppingCart.printCart()
                 # If the user want to remove
                 elif metadata['intentName'] == 'removeFromCart':
@@ -157,21 +162,21 @@ class ShoppingBot:
 
                     # If no item can be detected
                     if len(items) == 0:
-                        print('Sorry, I can\'t recognize the item you want to add/remove.')
+                        print(colored('Sorry, I can\'t recognize the item you want to add/remove.', 'red'))
                         self.displayHelp()
                         continue
 
                     for itemName in items:
                         self.shoppingCart.removeItem(itemName)
-                        print("Successfully remove " + itemName + " from cart!")
+                        print(colored("Successfully remove " + itemName + " from cart!", 'green'))
                     self.shoppingCart.printCart()
                 # If the user wants to check out
                 elif metadata['intentName'] == 'checkOut':
                     self.shoppingCart.printCart()
-                    print("Do you want to checkout (yes/no)?")
+                    print(colored("Do you want to checkout (yes/no)?", 'blue'))
                     confirm = raw_input()
                     if confirm.lower() == 'yes':
-                        print("Thanks for shopping with us!")
+                        print(colored("Thanks for shopping with us!", 'green'))
                         self.shoppingCart.printCart()
                         self.shoppingCart.getTotal()
 
