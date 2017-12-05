@@ -7,17 +7,7 @@ from __future__ import print_function
 import os
 import sys
 import json
-
-try:
-    import apiai
-except ImportError:
-    sys.path.append(
-        os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
-            os.pardir,
-            os.pardir
-        )
-    )
+import apiai
 
 CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
 
@@ -43,6 +33,9 @@ class ShoppingBot:
 
         print('Type exit to stop shopping')
 
+    def displayItemsInCart(self):
+        print(self.shoppingCart.toString)
+
     def displayBye(self):
         print('Thanks for shopping with us!')
         print('Bye')
@@ -53,28 +46,35 @@ class ShoppingBot:
 
         while True:
             print(u"> ", end=u"")
+
             userInput = raw_input()
 
+            # normal flow
             if userInput.lower() == 'exit':
+                self.displayBye()
                 break
-
-            print("echo " + userInput)
+            elif userInput.lower() == 'list-items':
+                self.displayItemsInCart()
+            elif userInput.lower() == 'checkout':
+                self.displayItemsInCart()
+                self.displayBye()
+            else:
+                # send to aiapi
+                print("echo " + userInput)
 
 
 def main():
-    '''
     ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
     request = ai.event_request(apiai.events.Event("my_custom_event"))
 
     request.lang = 'en'  # optional, default value equal 'en'
 
-    request.session_id = "<SESSION ID, UNIQUE FOR EACH USER>"
+    request.session_id = "my-session"
 
     response = request.getresponse()
 
     print(response.read())
-    '''
 
     shoppingBot = ShoppingBot("items.txt")
 
