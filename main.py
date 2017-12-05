@@ -19,6 +19,7 @@ class ShoppingBot:
     def __init__(self, data_file):
         self.shoppingCart = None
 
+
     def displayGreeting(self):
         print('Hi! Welcome to our grocery store! You can always type Help to get more information about our system!')
 

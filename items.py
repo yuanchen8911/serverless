@@ -1,10 +1,10 @@
 
 class Item():
-	def __init__(self,name):
+	def __init__(self,name,quantity = 1,price = 10):
 		self.itemName = name
-		self.price = 10
+		self.price = price
 		self.unit = 'pound'
-		self.quantity = 0
+		self.quantity = quantity
 	def setUnit(self,unit):
 		self.unit = unit
 	def getUnit(self):
@@ -13,5 +13,10 @@ class Item():
 		self.quantity = quantity
 	def getQuantity(self):
 		return self.quantity
+	def toString(self):
+		str = self.name + " " + str(self.quantity)
+		return str
+	def getPrice(self):
+		return self.price
 
 

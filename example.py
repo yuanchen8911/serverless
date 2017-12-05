@@ -1,3 +1,4 @@
+
 # -*- coding:utf8 -*-
 # !/usr/bin/env python
 # Copyright 2017 Google Inc. All Rights Reserved.
@@ -25,19 +26,23 @@ except ImportError:
     )
     import apiai
 
-CLIENT_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'
+CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
 
 
 def main():
     ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
-    request = ai.event_request(apiai.events.Event("my_custom_event"))
+    request = ai.text_request()
 
     request.lang = 'en'  # optional, default value equal 'en'
 
-    request.session_id = "<SESSION ID, UNIQUE FOR EACH USER>"
+    request.session_id = "1"
+
+    request.query = "I want some pears"
 
     response = request.getresponse()
+
+    print response[]
 
     print (response.read())
 
