@@ -1,14 +1,9 @@
-'''
-Here is our 
-
-'''
 from __future__ import print_function
 
 import os
 import sys
 import json
 import apiai
-import 
 
 CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
 
@@ -18,7 +13,7 @@ class ShoppingBot:
     shoppingCart = None
 
     def __init__(self, data_file):
-        self.shoppingCart =
+        self.shoppingCart = None
 
     def displayGreeting(self):
         print('Hi! Welcome to our grocery store! You can always type Help to get more information about our system!')
@@ -40,6 +35,9 @@ class ShoppingBot:
     def displayBye(self):
         print('Thanks for shopping with us!')
         print('Bye')
+
+    def askForQuantity(self, item):
+        print('How many ' + item.unit + " do you want?")
 
     def run(self):
         self.displayGreeting()
@@ -71,12 +69,27 @@ class ShoppingBot:
 
                 request.query = userInput
 
+                response = json.loads(request.getresponse().read())
 
-                response = request.getresponse()
+                result = response['result']
 
-                print(response.read())
+                number = result['parameters']['number']
 
-                print("echo " + userInput)
+                print(response)
+
+                items = result['parameters']['Item']
+
+                if len(items) == 0:
+                    print('Sorry, I don\'t understand.')
+                    self.displayHelp()
+                    pass
+
+                if len(number) < len(items):
+                    for itemName in items:
+                        item = self.itemsInfo[itemName]
+                        self.askForQuantity(item)
+
+            print("echo " + userInput)
 
 
 def main():
