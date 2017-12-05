@@ -29,7 +29,7 @@ class Cart():
 	def toString(self):
 		lst = []
 		for (k,item) in self.items.iteritems():
-			lst.append((item.name,item.getQuantity()))
+			lst.append((k,item.getQuantity()))
 		print (lst)
 		return 
 
