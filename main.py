@@ -4,6 +4,10 @@ import sys
 import json
 import apiai
 import os
+from termcolor import colored
+
+
+
 
 from shoppingCart import Cart
 from items import Item
@@ -21,18 +25,21 @@ class ShoppingBot:
         self.shoppingCart = Cart()
         self.ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
-        print('Start initializing shopping bot...')
+        if debug:
+            print('Start initializing shopping bot...')
         with open(data_file, 'r') as f:
             for line in f.readlines():
                 s = line.split(',')
                 if debug:
                     print(line)
                 self.itemsInfo[s[0]] = Item(s[0], 0, float(s[1]))
-            print('Finished initializing shopping bot')
+            if debug:
+                print('Finished initializing shopping bot')
 
     def displayGreeting(self):
-        print(
-            'Hi! Welcome to our grocery store! You can always type Help to get more information about our system!')
+        colored('hello', 'red'), colored('world', 'green')
+        print (colored(
+            'Hi! Welcome to our grocery store! You can always type Help to get more information about our system!', 'blue'))
 
     def displayHelp(self):
         print('Buy something -- Say "add something to my cart"')
@@ -53,7 +60,7 @@ class ShoppingBot:
         print('Bye')
 
     def askForQuantity(self, item):
-        print('How many ' + item.unit + " of " + item.itemName + " do you want?")
+        print(colored('We only sell by pounds. How many ' + item.unit + " of " + item.itemName + " do you want?",' blue'))
         userInput = raw_input()
         request = self.ai.text_request()
         request.lang = 'en'  # optional, default value equal 'en'
@@ -67,16 +74,17 @@ class ShoppingBot:
         metadata = response['result']['metadata']
 
         if len(metadata) == 0:
-            print('Sorry, I don\'t understand.')
+            print(colored('Sorry, I don\'t understand.', 'red'))
             self.displayHelp()
             return
         if metadata['intentName'] != 'itemCount':
-            print('Sorry, I don\'t understand.')
+            print(colored('Sorry, I don\'t understand.', 'red'))
             self.displayHelp()
             return
         count = response['result']['parameters']['number']
-        self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
-        print("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!")
+        status = self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
+        if status:
+            print(colored("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
         self.displayItemsInCart()
 
     def run(self):
@@ -130,7 +138,7 @@ class ShoppingBot:
 
                     # If no item can be detected
                     if len(items) == 0:
-                        print('Sorry, I can\'t recognize the item you want to add/remove.')
+                        print(colored('Sorry, I can\'t recognize the item you want to add/remove.', 'red'))
                         self.displayHelp()
                         continue
 
@@ -147,8 +155,8 @@ class ShoppingBot:
                         for i in range(len(items)):
                             item = self.itemsInfo[items[i]]
                             self.shoppingCart.addToCart(Item(item.itemName, int(number[i])))
-                            print("Successfully add " + str(
-                                number[i]) + " " + item.unit + " " + item.itemName + " to cart!")
+                            print(colored("Successfully add " + str(
+                                number[i]) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
                         self.shoppingCart.printCart()
                 # If the user want to remove
                 elif metadata['intentName'] == 'removeFromCart':
@@ -157,19 +165,30 @@ class ShoppingBot:
 
                     # If no item can be detected
                     if len(items) == 0:
-                        print('Sorry, I can\'t recognize the item you want to add/remove.')
+                        print(colored('Sorry, I can\'t recognize the item you want to add/remove.', 'red'))
                         self.displayHelp()
                         continue
 
                     for itemName in items:
                         self.shoppingCart.removeItem(itemName)
-                        print("Successfully remove " + itemName + " from cart!")
+                        print(colored("Successfully remove " + itemName + " from cart!", 'green'))
                     self.shoppingCart.printCart()
                 # If the user wants to check out
                 elif metadata['intentName'] == 'checkOut':
-                    print("Thanks for shopping with us!")
                     self.shoppingCart.printCart()
-                    self.shoppingCart.getTotal()
+                    print(colored("Do you want to checkout (yes/no)?", 'blue'))
+                    confirm = raw_input()
+                    if confirm.lower() == 'yes':
+                        print(colored("Thanks for shopping with us!", 'green'))
+                        self.shoppingCart.printCart()
+                        self.shoppingCart.getTotal()
+
+                # If the user wants to ask for help or just say greetings
+                elif metadata['intentName'] == 'greeting':
+                    self.displayGreeting()
+
+                else:
+                    print(colored('Sorry, I don\'t understand.', 'red'))
 
             if debug:
                 print("echo " + userInput)
