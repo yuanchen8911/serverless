@@ -25,14 +25,16 @@ class ShoppingBot:
         self.shoppingCart = Cart()
         self.ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
-        print('Start initializing shopping bot...')
+        if debug:
+            print('Start initializing shopping bot...')
         with open(data_file, 'r') as f:
             for line in f.readlines():
                 s = line.split(',')
                 if debug:
                     print(line)
                 self.itemsInfo[s[0]] = Item(s[0], 0, float(s[1]))
-            print('Finished initializing shopping bot')
+            if debug:
+                print('Finished initializing shopping bot')
 
     def displayGreeting(self):
         colored('hello', 'red'), colored('world', 'green')
@@ -58,7 +60,7 @@ class ShoppingBot:
         print('Bye')
 
     def askForQuantity(self, item):
-        print('How many ' + item.unit + " of " + item.itemName + " do you want?")
+        print(colored('We only sell by pounds. How many ' + item.unit + " of " + item.itemName + " do you want?",' blue'))
         userInput = raw_input()
         request = self.ai.text_request()
         request.lang = 'en'  # optional, default value equal 'en'
@@ -80,8 +82,9 @@ class ShoppingBot:
             self.displayHelp()
             return
         count = response['result']['parameters']['number']
-        self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
-        print(colored("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
+        status = self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
+        if status:
+            print(colored("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
         self.displayItemsInCart()
 
     def run(self):
@@ -179,6 +182,10 @@ class ShoppingBot:
                         print(colored("Thanks for shopping with us!", 'green'))
                         self.shoppingCart.printCart()
                         self.shoppingCart.getTotal()
+
+                # If the user wants to ask for help or just say greetings
+                elif metadata['intentName'] == 'greeting':
+                    self.displayGreeting()
 
                 else:
                     print(colored('Sorry, I don\'t understand.', 'red'))
