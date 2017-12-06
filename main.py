@@ -5,10 +5,6 @@ import json
 import apiai
 import os
 from termcolor import colored
-
-
-
-
 from shoppingCart import Cart
 from items import Item
 
@@ -82,9 +78,9 @@ class ShoppingBot:
             self.displayHelp()
             return
         count = response['result']['parameters']['number']
-        status = self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
-        if status:
-            print(colored("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
+        self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
+
+        print(colored("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
         self.displayItemsInCart()
 
     def run(self):
@@ -172,8 +168,9 @@ class ShoppingBot:
                         continue
 
                     for itemName in items:
-                        self.shoppingCart.removeItem(itemName)
-                        print(colored("Successfully remove " + itemName + " from cart!", 'green'))
+                        ret = self.shoppingCart.removeItem(itemName)
+                        if ret:
+                            print(colored("Successfully remove " + itemName + " from cart!", 'green'))
                     self.shoppingCart.printCart()
                 # If the user wants to check out
                 elif metadata['intentName'] == 'checkOut':
