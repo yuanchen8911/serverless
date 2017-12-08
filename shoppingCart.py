@@ -23,14 +23,14 @@ class Cart():
             print (item + "not in shopping cart! ")
             return 
         else:
-            self.items[item.itemName].setQuantity(amount)
+            self.items[item.itemName].setQuantity(items[item.itemName].getQuantity() - amount)
         return
 
     '''
 	remove item from shopping cart, item is a string 
 	'''
 
-    def removeItem(self, item,num):
+    def removeItem(self, item):
         if item not in self.items:
             print item + " not in shopping cart"
             return False
