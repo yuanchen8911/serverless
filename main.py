@@ -84,10 +84,9 @@ class ShoppingBot:
                           'green'))
 
         elif action == 'remove':
-            ret = self.shoppingCart.editCart(Item(item.itemName, int(count), item.price))
+            ret = self.shoppingCart.editCart(Item(item.itemName), int(count))
             if ret:
                 print(colored("Successfully remove " + item.itemName + " from cart!", 'green'))
-        self.shoppingCart.printCart()
 
 
         self.displayItemsInCart()
@@ -197,12 +196,13 @@ class ShoppingBot:
                                 self.askForQuantity(item, 'remove')
                                 continue
 
-                        for i in range(len(items)):
-                            item = self.itemsInfo[items[i]]
-                            ret = self.shoppingCart.editCart(Item(item.itemName), int(number[i]))
-                            if ret:
-                                print(colored("Successfully remove " + str(number[i]) + ' ' + items[i] + " from cart!", 'green'))
-                        self.shoppingCart.printCart()
+                        else:
+                            for i in range(len(items)):
+                                item = self.itemsInfo[items[i]]
+                                ret = self.shoppingCart.editCart(Item(item.itemName), int(number[i]))
+                                if ret:
+                                    print(colored("Successfully remove " + str(number[i]) + ' ' + items[i] + " from cart!", 'green'))
+                            self.shoppingCart.printCart()
 
 
 
