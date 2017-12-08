@@ -201,9 +201,8 @@ class ShoppingBot:
                             item = self.itemsInfo[items[i]]
                             ret = self.shoppingCart.editCart(Item(item.itemName), int(number[i]))
                             if ret:
-                                print(colored("Successfully remove " + itemName + " from cart!", 'green'))
+                                print(colored("Successfully remove " + str(number[i]) + ' ' + items[i] + " from cart!", 'green'))
                         self.shoppingCart.printCart()
-
 
 
 
