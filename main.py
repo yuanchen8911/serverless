@@ -55,7 +55,7 @@ class ShoppingBot:
         print('Thanks for shopping with us!')
         print('Bye')
 
-    def askForQuantity(self, item):
+    def askForQuantity(self, item, action):
         print(colored('We only sell by pounds. How many ' + item.unit + " of " + item.itemName + " do you want?",'blue'))
         userInput = raw_input()
         request = self.ai.text_request()
@@ -78,9 +78,18 @@ class ShoppingBot:
             self.displayHelp()
             return
         count = response['result']['parameters']['number']
-        self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
+        if action == 'add':
+            self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
+            print(colored("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!",
+                          'green'))
 
-        print(colored("Successfully add " + str(count) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
+        elif action == 'remove':
+            ret = self.shoppingCart.editCart(Item(item.itemName, int(count), item.price))
+            if ret:
+                print(colored("Successfully remove " + item.itemName + " from cart!", 'green'))
+        self.shoppingCart.printCart()
+
+
         self.displayItemsInCart()
 
     def run(self):
@@ -145,7 +154,7 @@ class ShoppingBot:
                     if len(number) < len(items):
                         for itemName in items:
                             item = self.itemsInfo[itemName]
-                            self.askForQuantity(item)
+                            self.askForQuantity(item, 'add')
 
 
                     # If all items and numbers are specified
@@ -170,12 +179,6 @@ class ShoppingBot:
                         self.displayHelp()
                         continue
 
-                    # If number of items are not specified
-                    if len(number) < len(items):
-                        for itemName in items:
-                            item = self.itemsInfo[itemName]
-                            self.askForQuantity(item)
-
                     # If remove all of the products
                     if all == 'true':
                         for itemName in items:
@@ -183,14 +186,26 @@ class ShoppingBot:
                             if ret:
                                 print(colored("Successfully remove " + itemName + " from cart!", 'green'))
                         self.shoppingCart.printCart()
+                        continue
 
                     # If remove a certain number of products
                     else:
-                        for itemName in items:
-                            ret = self.shoppingCart.removeItem(itemName)
+                        # If number of items are not specified
+                        if len(number) < len(items):
+                            for itemName in items:
+                                item = self.itemsInfo[itemName]
+                                self.askForQuantity(item, 'remove')
+                                continue
+
+                        for i in range(len(items)):
+                            item = self.itemsInfo[items[i]]
+                            ret = self.shoppingCart.editCart(Item(item.itemName), int(number[i]))
                             if ret:
                                 print(colored("Successfully remove " + itemName + " from cart!", 'green'))
                         self.shoppingCart.printCart()
+
+
+
 
                 # If the user wants to check out
                 elif metadata['intentName'] == 'checkOut':
