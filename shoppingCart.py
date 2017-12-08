@@ -20,11 +20,17 @@ class Cart():
     '''
     def editCart(self,item,amount):
         if item.itemName not in self.items:
-            print (item + "not in shopping cart! ")
-            return 
+            print (item.itemName + " not in shopping cart! ")
+            return False
+
         else:
-            self.items[item.itemName].setQuantity(items[item.itemName].getQuantity() - amount)
-        return
+            number = self.items[item.itemName].getQuantity()
+            if number <= amount:
+                self.items.pop(item.itemName)
+            else:
+                self.items[item.itemName].setQuantity(number - amount)
+
+        return True
 
     '''
 	remove item from shopping cart, item is a string 
