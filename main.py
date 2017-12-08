@@ -140,14 +140,14 @@ class ShoppingBot:
                         self.displayHelp()
                         continue
 
-                    # TO DO: If the item cannot be found in our grocery
-
 
                     # If number of items are not specified
                     if len(number) < len(items):
                         for itemName in items:
                             item = self.itemsInfo[itemName]
                             self.askForQuantity(item)
+
+
                     # If all items and numbers are specified
                     else:
                         for i in range(len(items)):
@@ -156,10 +156,13 @@ class ShoppingBot:
                             print(colored("Successfully add " + str(
                                 number[i]) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
                         self.shoppingCart.printCart()
+
                 # If the user want to remove
                 elif metadata['intentName'] == 'removeFromCart':
                     result = response['result']
                     items = result['parameters']['Item']
+                    number = result['parameters']['number']
+                    all = result['parameters']['all']
 
                     # If no item can be detected
                     if len(items) == 0:
@@ -167,11 +170,28 @@ class ShoppingBot:
                         self.displayHelp()
                         continue
 
-                    for itemName in items:
-                        ret = self.shoppingCart.removeItem(itemName)
-                        if ret:
-                            print(colored("Successfully remove " + itemName + " from cart!", 'green'))
-                    self.shoppingCart.printCart()
+                    # If number of items are not specified
+                    if len(number) < len(items):
+                        for itemName in items:
+                            item = self.itemsInfo[itemName]
+                            self.askForQuantity(item)
+
+                    # If remove all of the products
+                    if all == 'true':
+                        for itemName in items:
+                            ret = self.shoppingCart.removeItem(itemName)
+                            if ret:
+                                print(colored("Successfully remove " + itemName + " from cart!", 'green'))
+                        self.shoppingCart.printCart()
+
+                    # If remove a certain number of products
+                    else:
+                        for itemName in items:
+                            ret = self.shoppingCart.removeItem(itemName)
+                            if ret:
+                                print(colored("Successfully remove " + itemName + " from cart!", 'green'))
+                        self.shoppingCart.printCart()
+
                 # If the user wants to check out
                 elif metadata['intentName'] == 'checkOut':
                     self.shoppingCart.printCart()
