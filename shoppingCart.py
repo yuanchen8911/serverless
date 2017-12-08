@@ -59,7 +59,7 @@ class Cart():
             quantity = item.getQuantity()
             price = item.getPrice()
             totalP = float(quantity) * price
-            print name + "            " + str(quantity) + "             " + str(totalP)
+            print name + "          " + str(quantity) + "           " + str(totalP)
         return
 
     def getTotal(self):

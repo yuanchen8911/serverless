@@ -97,7 +97,7 @@ class ShoppingBot:
                 continue
             # normal flow
             # If the user wants to exit
-            if userInput.lower() == 'exit':
+            if userInput.lower() == 'exit' or userInput.lower() == 'quit':
                 self.displayBye()
                 break
             # If the user wants to check shopping cart
