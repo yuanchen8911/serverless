@@ -23,7 +23,7 @@ class Cart():
             print (item + "not in shopping cart! ")
             return 
         else:
-            self.items[item.itemName].setQuantity(items[item.itemName].getQuantity() - amount)
+            self.items[item.itemName].setQuantity(self.items[item.itemName].getQuantity() - amount)
         return
 
     '''
