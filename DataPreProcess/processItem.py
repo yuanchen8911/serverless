@@ -57,6 +57,8 @@ def main():
             if len(words) <= 0:
                 continue
             entity = words[-1]
+            if entity.endswith('s'):
+                entity = entity[0:-1]
             if len(words) <= 4 and entity not in entity_map:
                 result_list = generateSynonyms(words)
                 item_map[" ".join(words) + " " + entity] = result_list
