@@ -15,10 +15,12 @@ class Cart():
             name = item.itemName
             self.items[name] = item
         return
+
     '''
     
     '''
-    def editCart(self,item,amount):
+
+    def editCart(self, item, amount):
         if item.itemName not in self.items:
             print (item.itemName + " not in shopping cart! ")
             return False

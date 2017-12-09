@@ -1,3 +1,5 @@
+apiai
+termcolor
 * Using the [data that was open-sourced by Instacart](https://tech.instacart.com/3-million-instacart-orders-open-sourced-d40d29ead6f2), prepare the data so it can be used in a CUI. A working app should let me add and remove items from a shopping cart. It should also let me check the prices of items, and pseudo-checkout to make a purchase (psuedo meaning Stripe integration with the terminal is not necessary).
 
 ## Details
