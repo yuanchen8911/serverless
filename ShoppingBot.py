@@ -124,14 +124,18 @@ class ShoppingBot:
 
         metadata = response['result']['metadata']
 
+        # If it can not be understood
         if len(metadata) == 0:
             self.displayMessage('Error')
             self.displayMessage('Help')
             return
+
+        # If user doesn't contain number
         if metadata['intentName'] != 'itemCount':
             self.displayMessage('Error')
             self.displayMessage('Help')
             return
+
         count = response['result']['parameters']['number']
         if action == 'add':
             self.shoppingCart.addToCart(Item(item.itemName, int(count), item.price))
