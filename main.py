@@ -26,6 +26,7 @@ class ShoppingBot:
         with open(data_file, 'r') as f:
             for line in f.readlines():
                 s = line.split(',')
+                print (line)
                 if debug:
                     print(line)
                 self.itemsInfo[s[0]] = Item(s[0], 0, float(s[1]))
