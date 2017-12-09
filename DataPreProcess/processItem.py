@@ -1,5 +1,6 @@
 import sys
 import re
+import random
 import json
 import os
 
@@ -63,10 +64,17 @@ def main():
 
     f.close()
 
+    price_file = open('price.txt', 'w+')
+    item_file = open('dialogflow_entity.txt', 'w+')
     for key, val in item_map.iteritems():
         print('"' + key + '", "' + '","'.join(val) + '"')
-        # print (val)
-        # print("\n")
+        item_file.write('"' + key + '", "' + '","'.join(val) + '"\n')
+        price = random.random() * 20
+        price_string = round(price, 2)
+        price_file.write(key + "," + str(price_string) + '\n')
+
+    price_file.close()
+    item_file.close()
 
 
 if __name__ == '__main__':
