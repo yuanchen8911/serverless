@@ -49,6 +49,7 @@ def main():
 
     item_map = {}
     entity_map = {}
+    number_list = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'nine', 'ten']
     with open(filename, 'r') as f:
         for line in f.readlines():
             items = line.lower().split(',')
@@ -56,6 +57,16 @@ def main():
             words = tokenizeDoc(product_name)
             if len(words) <= 0:
                 continue
+
+            contains_number = False
+            for num in number_list:
+                if num in words:
+                    contains_number = True
+                    break
+
+            if contains_number:
+                continue
+
             entity = words[-1]
             if entity.endswith('s'):
                 entity = entity[0:-1]
