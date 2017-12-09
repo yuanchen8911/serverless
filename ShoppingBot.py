@@ -37,7 +37,6 @@ class ShoppingBot:
         with open(data_file, 'r') as f:
             for line in f.readlines():
                 s = line.split(',')
-                print (line)
                 if debug:
                     print(line)
                 self.itemsInfo[s[0]] = Item(s[0], 0, float(s[1]))
@@ -108,13 +107,20 @@ class ShoppingBot:
     '''
 
     def askForQuantity(self, item, action):
-        print(
-            colored('We only sell by pounds. How many ' + item.unit + " of " + item.itemName + " do you want?", 'blue'))
+        if action == 'add':
+            print(colored('We only sell by pounds. How many ' + item.unit + " of " + item.itemName + " do you want?", 'blue'))
+        elif action == 'remove':
+            print (colored('How many '+item.itemName +" do you want to remove?",'blue'))
+                
         userInput = raw_input()
+        while (userInput == None or len(userInput) <= 0):
+            userInput = raw_input()
+
         response = self.sendQuery(userInput)
 
         if debug:
             print(response)
+
 
         metadata = response['result']['metadata']
 
