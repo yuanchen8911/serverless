@@ -14,7 +14,7 @@ from ShoppingComponents.shoppingCart import Cart
 CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
 
 # Debug mode to output responses
-debug = True
+debug = False
 
 
 class ShoppingBot:
@@ -194,7 +194,7 @@ class ShoppingBot:
                     else:
                         for i in range(len(items)):
                             item = self.itemsInfo[items[i]]
-                            self.shoppingCart.addToCart(Item(item.itemName, int(number[i])))
+                            self.shoppingCart.addToCart(Item(item.itemName, number[i], item.price))
                             print(colored("Successfully add " + str(
                                 number[i]) + " " + item.unit + " " + item.itemName + " to cart!", 'green'))
                         self.shoppingCart.printCart()
@@ -267,7 +267,7 @@ def main():
     global debug
     if len(sys.argv) > 1 and sys.argv[1] == '--debug':
         debug = True
-    shoppingBot = ShoppingBot("Grocery/Grocery.txt")
+    shoppingBot = ShoppingBot("Grocery/price.txt")
     shoppingBot.run()
 
 
