@@ -1,15 +1,20 @@
 from __future__ import print_function
 
-import sys
 import json
-import apiai
 import os
-from termcolor import colored
-from shoppingCart import Cart
-from items import Item
+import sys
 
+import apiai
+from termcolor import colored
+
+from ShoppingComponents.items import Item
+from ShoppingComponents.shoppingCart import Cart
+
+# This is the client access token for DialogFlow, specific to client
 CLIENT_ACCESS_TOKEN = 'c7329636abe648c9ad117c83c0f3bb1f'
-debug = False
+
+# Debug mode to output responses
+debug = True
 
 
 class ShoppingBot:
@@ -17,12 +22,18 @@ class ShoppingBot:
     shoppingCart = None
     ai = None
 
+    '''
+    Initialization of server connection and data import
+    '''
+
     def __init__(self, data_file):
         self.shoppingCart = Cart()
         self.ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
         if debug:
             print('Start initializing shopping bot...')
+
+        # Import grocery as csv format
         with open(data_file, 'r') as f:
             for line in f.readlines():
                 s = line.split(',')
@@ -33,37 +44,74 @@ class ShoppingBot:
             if debug:
                 print('Finished initializing shopping bot')
 
-    def displayGreeting(self):
-        colored('hello', 'red'), colored('world', 'green')
-        print (colored(
-            'Hi! Welcome to our grocery store! You can always type Help to get more information about our system!', 'blue'))
+    def displayMessage(self, category):
 
-    def displayHelp(self):
-        print('Buy something -- Say "add something to my cart"')
+        # The Greeting message to display
+        if category == 'Greeting':
+            colored('hello', 'red'), colored('world', 'green')
+            print(colored(
+                'Hi! Welcome to our grocery store! '
+                'You can always type "help" to get more information about our system!',
+                'blue'))
 
-        print('Remove something -- Say "remove something"')
+        # The Help message to display
+        elif category == 'Help':
 
-        print('List items in your shopping cart -- Type list-items')
+            print(colored(
+                'Want to put items in shopping cart? -- Try "add three apples to my cart"\n'
+                'Want to remove items from shopping cart? -- Try "remove all apples"\n'
+                'Want check what\'s in your shopping cart? -- Try "Show me my cart?"\n'
+                'Want to checkout? -- Try "check me out"\n'
+                'Want to exit? -- Try "exit"',
+                'green'))
 
-        print('Check out -- Type checkout')
+        # The End Conversation message to display
+        elif category == 'End':
+            print(colored(
+                'Thanks for shopping with us! Have a nice day!',
+                'green'))
 
-        print('Type exit to stop shopping')
+        # The Error message to display for not recognizing
+        elif category == 'Error':
+            print(colored(
+                'Sorry, I don\'t understand.',
+                'red'))
+
+        # The Error message to display for no such item
+        elif category == 'NoItem':
+            print(colored(
+                'Sorry, I can\'t recognize the item you want to add/remove.', 'red',
+                'red'
+            ))
+
+    '''
+    List items inside the shopping cart
+    '''
 
     def displayItemsInCart(self):
         self.shoppingCart.printCart()
 
-    def displayBye(self):
-        print('Thanks for shopping with us!')
-        print('Bye')
+    '''
+    Set up connection with Dialog Flow, send query and return with response
+    '''
 
-    def askForQuantity(self, item, action):
-        print(colored('We only sell by pounds. How many ' + item.unit + " of " + item.itemName + " do you want?",'blue'))
-        userInput = raw_input()
+    def sendQuery(self, userInput):
         request = self.ai.text_request()
         request.lang = 'en'  # optional, default value equal 'en'
         request.session_id = "1"
         request.query = userInput
         response = json.loads(request.getresponse().read())
+        return response
+
+    '''
+    Ask for quantity if a user doesn't specify when purchasing or removing items
+    '''
+
+    def askForQuantity(self, item, action):
+        print(
+            colored('We only sell by pounds. How many ' + item.unit + " of " + item.itemName + " do you want?", 'blue'))
+        userInput = raw_input()
+        response = self.sendQuery(userInput)
 
         if debug:
             print(response)
@@ -71,12 +119,12 @@ class ShoppingBot:
         metadata = response['result']['metadata']
 
         if len(metadata) == 0:
-            print(colored('Sorry, I don\'t understand.', 'red'))
-            self.displayHelp()
+            self.displayMessage('Error')
+            self.displayMessage('Help')
             return
         if metadata['intentName'] != 'itemCount':
-            print(colored('Sorry, I don\'t understand.', 'red'))
-            self.displayHelp()
+            self.displayMessage('Error')
+            self.displayMessage('Help')
             return
         count = response['result']['parameters']['number']
         if action == 'add':
@@ -89,12 +137,11 @@ class ShoppingBot:
             if ret:
                 print(colored("Successfully remove " + item.itemName + " from cart!", 'green'))
 
-
         self.displayItemsInCart()
 
     def run(self):
-        self.displayGreeting()
-        self.displayHelp()
+        self.displayMessage('Greeting')
+        self.displayMessage('Help')
 
         while True:
 
@@ -106,25 +153,13 @@ class ShoppingBot:
                 continue
             # normal flow
             # If the user wants to exit
-            if userInput.lower() == 'exit' or userInput.lower() == 'quit':
-                self.displayBye()
+            if userInput.lower() == 'exit':
+                self.displayMessage('End')
                 break
-            # If the user wants to check shopping cart
-            elif userInput.lower() == 'list-items':
-                self.displayItemsInCart()
             elif userInput.lower() == 'help':
-                self.displayHelp()
+                self.displayMessage('Help')
             else:
-                # send to aiapi
-                request = self.ai.text_request()
-
-                request.lang = 'en'  # optional, default value equal 'en'
-
-                request.session_id = "1"
-
-                request.query = userInput
-
-                response = json.loads(request.getresponse().read())
+                response = self.sendQuery(userInput)
 
                 if debug:
                     print(response)
@@ -133,8 +168,8 @@ class ShoppingBot:
 
                 # If the query cannot be understood
                 if len(metadata) == 0:
-                    print(colored('Sorry, I don\'t understand.', 'red'))
-                    self.displayHelp()
+                    self.displayMessage("Error")
+                    self.displayMessage('Help')
                     continue
 
                 # If the user wants to add
@@ -145,10 +180,9 @@ class ShoppingBot:
 
                     # If no item can be detected
                     if len(items) == 0:
-                        print(colored('Sorry, I can\'t recognize the item you want to add/remove.', 'red'))
-                        self.displayHelp()
+                        self.displayMessage('NoItem')
+                        self.displayMessage('Help')
                         continue
-
 
                     # If number of items are not specified
                     if len(number) < len(items):
@@ -175,8 +209,8 @@ class ShoppingBot:
 
                     # If no item can be detected
                     if len(items) == 0:
-                        print(colored('Sorry, I can\'t recognize the item you want to add/remove.', 'red'))
-                        self.displayHelp()
+                        self.displayMessage("NoItem")
+                        self.displayMessage("Help")
                         continue
 
                     # If remove all of the products
@@ -202,7 +236,9 @@ class ShoppingBot:
                                 item = self.itemsInfo[items[i]]
                                 ret = self.shoppingCart.editCart(Item(item.itemName), int(number[i]))
                                 if ret:
-                                    print(colored("Successfully remove " + str(number[i]) + ' ' + items[i] + " from cart!", 'green'))
+                                    print(colored(
+                                        "Successfully remove " + str(number[i]) + ' ' + items[i] + " from cart!",
+                                        'green'))
                             self.shoppingCart.printCart()
 
 
@@ -219,10 +255,10 @@ class ShoppingBot:
 
                 # If the user wants to ask for help or just say greetings
                 elif metadata['intentName'] == 'greeting':
-                    self.displayGreeting()
+                    self.displayMessage('Greeting')
 
                 else:
-                    print(colored('Sorry, I don\'t understand.', 'red'))
+                    self.displayMessage("Error")
 
             if debug:
                 print("echo " + userInput)
@@ -232,7 +268,7 @@ def main():
     global debug
     if len(sys.argv) > 1 and sys.argv[1] == '--debug':
         debug = True
-    shoppingBot = ShoppingBot("items.txt")
+    shoppingBot = ShoppingBot("Grocery/Grocery.txt")
     shoppingBot.run()
 
 

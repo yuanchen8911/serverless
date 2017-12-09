@@ -1,8 +1,0 @@
-apple,1
-banana,2
-grape,3
-pear,2
-pineapple,3
-strawberry,2
-oconut,4
-blueberry,3
