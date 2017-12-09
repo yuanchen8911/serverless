@@ -3,7 +3,7 @@ class Cart():
         self.items = {}
 
     '''
-	add item to shopping cart 
+	Add item to shopping cart 
 	'''
 
     def addToCart(self, item):
@@ -17,7 +17,7 @@ class Cart():
         return
 
     '''
-    
+    Used to remove items in shopping cart with numbers 
     '''
 
     def editCart(self, item, amount):
@@ -61,20 +61,24 @@ class Cart():
 	'''
 
     def printCart(self):
-        print 'name      quantity        price'
+        print ("name".ljust(40) + "quantity".ljust(20) + "price".ljust(20))
+        print ("-" * 65)
         for (k, item) in self.items.iteritems():
             name = k
             quantity = item.getQuantity()
             price = item.getPrice()
             totalP = float(quantity) * price
-            print name + "          " + str(quantity) + "           " + str(totalP)
+            print (name.ljust(40) + str(quantity).ljust(20) + str(totalP).ljust(20))
         return
 
+    '''
+    calculate total price
+    '''
     def getTotal(self):
         total = 0
         for (k, item) in self.items.iteritems():
             total += item.getQuantity() * item.getPrice()
-        print '--------------------------------------'
-        print 'total amount ' + str(total)
+        print ('-' * 65)
+        print ('total amount ' + str(total))
         self.items.clear()
         return
