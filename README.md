@@ -14,6 +14,7 @@ User D: As users who want to make changes, users would want to remove items from
 ## Features
 
 * Add certain amount of items to shopping cart.
+* Matching partial names to item full name in the store. e.g. trouts" -> "smoked rainbow trout"
 * Remove certain amount of items from shopping cart.
 * List current status of the shopping cart.
 * checkout items from shopping cart.
