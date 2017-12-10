@@ -1,6 +1,16 @@
 # Shopping Bot CUI
 ## Overview 
 A shopping CUI that allows the user adding/removing items toward a shopping cart, reviewing and checking out shopping cart. 
+## User Stories
+User A: As someone don’t want to go shopping, user would like to order my daily groceries by entering the name of the item and the amount in common language. In this way, user can access the basic functionality of the product.
+
+
+User B: As a user, I want to see what are in my shopping cart every time I make any changes, such as adding or removing things from my shopping cart, so that it reminds me what else I need to purchase and helps to to compare different options.
+
+User C: As users might mistype things, the app should be able to understand some synonyms as well as giving suggestions as it couldn’t find synonyms in database. In this way, the application can handle mistakes made by users. 
+
+User D: As users who want to make changes, users would want to remove items from their shopping cart, this will support user to change their minds and making the application more usable. 
+
 ## Features
 
 * Add certain amount of items to shopping cart.
